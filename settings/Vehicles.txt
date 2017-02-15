@@ -1,0 +1,8 @@
+Car,San Francisco
+Car,Dublin
+Taxi,Santa Cruz
+Bus,San Ramon
+Bart,Livermore
+Aircraft,San Francisco
+Car,Palo Alto
+Taxi,Palo Alto

@@ -1,0 +1,9 @@
+name,currentLocation,destination,preference,vehiclePreference
+Kelly,Livermore,San Francisco,3,Aircraft
+Daniel,Dublin,Pleasanton,1,Bart
+Bill,San Francisco,San Jose,1,Bicycle
+Melinda,Santa Cruz,San Ramon,2,Bus
+Amelia,San Ramon,Santa Cruz,1,Car
+Regis,Santa Cruz,Dublin,2,Taxi
+Terry,Dublin,Palo Alto,1,Car
+Larry,Palo Alto,Livermore,2,Car
