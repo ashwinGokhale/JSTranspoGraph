@@ -4,6 +4,7 @@
 
 import TinyQueue from 'tinyqueue'
 //const TinyQueue = require('tinyqueue');
+import { vehicles } from '../settings/settings'
 
 export default class Graph{
 	constructor() {
@@ -36,47 +37,32 @@ export default class Graph{
 		var source = p.currentLoc;
 
 		// Must reset every location distance and previous values upon each function call
-		var vals = Object.keys(this.graph).map((key) =>{
-			return this.graph[key];
-		});
-
-		vals.forEach((x) =>{
+		Object.values(this.graph).forEach((x) => {
 			x.dist = Infinity;
 			x.prev = null;
 		});
+		
 
 		source.dist = 0;
-		var vertexQueue = new TinyQueue();
+		var vertexQueue = new TinyQueue([], (a,b) => {
+			return a && b ? (a.dist < b.dist ? -1 : a.dist > b.dist ? 1: 0): 0;
+		});
 		vertexQueue.push(source);
 
 		while (vertexQueue.peek()) {
 
 			// Pop the Location with the least distance
-			var u = vertexQueue.pop();
+			let u = vertexQueue.pop();
 
 			// Visit each edge exiting u with the specified vehicle preference
 			let pref = p.vehiclePreference;
 			let adj = u.adjacent;
-			adj[pref].forEach((e) => {
-				var v = e.to;	// Location v
-				var alt = u.dist + e.weight;	// Calculate alternative cost (double)
+			adj.get(vehicles.get(p.vehiclePreference)).forEach((e) => {
+				let v = e.to;	// Location v
+				let alt = u.dist + e.weight;	// Calculate alternative cost (double)
 				if (alt < v.dist) {
-
 					// Remove v from priority queue
-					var tempList = [];
-					var toRemove = vertexQueue.pop();
-					tempList.push(toRemove);
-					while(toRemove != v && vertexQueue.peek()){
-						toRemove = vertexQueue.pop();
-
-						if (toRemove != v)
-							tempList.push(toRemove);
-					}
-
-					// Add items back to the queue
-					tempList.forEach((item) => {
-						vertexQueue.push(item);
-					});
+					vertexQueue.data.filter((loc) => loc == v);
 
 					v.dist = alt;
 					v.prev = u;

@@ -14,51 +14,27 @@ export default class Vehicle {
         this.location = undefined;
     }
 
-    // setVehicle = (name, speedOfTravel, waitTime, unitCost, typeOfCost) => {
-    //     Vehicle.vehicles[name] = new Vehicle(name, speedOfTravel, waitTime, unitCost, typeOfCost);
-    // };
-
-    // getVehicle = (name) => {
-    //     return Vehicle.vehicles[name];
-    // };
-
     toString = () => {
         return this.name;
     };
 
+    calculateCostOfTravel(distance){
+		// typeOfCost: 1 is fixed (regardless of time or distance), 2 is fixed + a factor of distance  (e.g. a Taxi cab),
+		// and 3 is based on fraction of distance (e.g. a Car where unitCost is expressed as cost/gallon)
+
+		switch (this.typeOfCost){
+			case 1:
+				return this.unitCost; // Fixed Cost
+
+			case 2:
+				return this.unitCost + (distance * 2); // Fixed Cost + $2 per mile
+
+			case 3:
+				return (this.unitCost / 25) * distance; // Cost per gallon per mile. $3 a gallon and 25 mpg
+
+			default:
+				return 0.0;
+		}
+	}
+
 }
-
-// module.exports = {
-//     vehicleNames: Vehicle.vehicleNames,
-//     setVehicle: setVehicle,
-//     getVehicle: getVehicle,
-//     getVehicles: () => {
-//         // Initialize all Vehicles and add to the Vehicle HashMap
-
-//         for (let i = 0; i < 6; i++) {
-//             switch (i) {
-//                 // Aircraft, Bart, Bicycle, Bus, Car, Taxi
-//                 case 0:
-//                     setVehicle("Aircraft", 575, 120, 400, 1);
-//                     break;
-//                 case 1:
-//                     setVehicle("Bart", 60, 10, 8, 1);
-//                     break;
-//                 case 2:
-//                     setVehicle("Bicycle", 10, 0, 0, 1);
-//                     break;
-//                 case 3:
-//                     setVehicle("Bus", 30, 10, 0.5, 1);
-//                     break;
-//                 case 4:
-//                     setVehicle("Car", 50, 0, 3, 3);
-//                     break;
-//                 case 5:
-//                     setVehicle("Taxi", 50, 10, 1.5, 2);
-//                     break;
-//             }
-//         }
-
-//         return Vehicle.vehicles;
-//     }
-// };

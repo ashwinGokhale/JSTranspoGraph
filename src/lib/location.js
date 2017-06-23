@@ -13,21 +13,26 @@ export default class Location {
 		this.vehicles = vehicles;
 		this.lat = latitude;
 		this.lon = longitude;
+        this.dist = Infinity;
 
 		// Initialize Adjacency HashMap and map each vehicle to an ArrayList of Edges
-		this.adjacent = {};
-        vehicles.forEach((payload) => {
-            if (payload) {
-                this.adjacent[payload.name] = [];
+		this.adjacent = new Map();
+        vehicles.forEach((vehicle) => {
+            if (vehicle) {
+                this.adjacent.set(vehicle, []);
             }
         });
     }
 
     addNeighbor = (neighbor, weight, vehicle) => {
-        var e = new Edge(this, neighbor, weight, vehicle);
-        if (this.adjacent[vehicle.name] != undefined && !this.adjacent[vehicle.name].includes(e)) {
-            this.adjacent[vehicle.name].push(e);
-        }
+        // var e = new Edge(this, neighbor, weight, vehicle);
+        // if (this.adjacent[vehicle.name] != undefined && !this.adjacent[vehicle.name].includes(e)) {
+        //     this.adjacent[vehicle.name].push(e);
+        // }
+
+        let e = new Edge(this, neighbor, weight , vehicle);
+		if (!this.adjacent.get(vehicle).includes(e))
+			this.adjacent.get(vehicle).push(e);
     };
 }
 

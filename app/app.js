@@ -129,13 +129,14 @@ var createClass = function () {
  * Created by ashwin on 2/25/17.
  */
 
-var Vehicle = function Vehicle(name, speedOfTravel, waitTime, unitCost, typeOfCost) {
+var Vehicle = function () {
+  function Vehicle(name, speedOfTravel, waitTime, unitCost, typeOfCost) {
     var _this = this;
 
     classCallCheck(this, Vehicle);
 
     this.toString = function () {
-        return _this.name;
+      return _this.name;
     };
 
     this.name = name;
@@ -144,43 +145,31 @@ var Vehicle = function Vehicle(name, speedOfTravel, waitTime, unitCost, typeOfCo
     this.unitCost = unitCost;
     this.typeOfCost = typeOfCost;
     this.location = undefined;
-};
+  }
 
-// module.exports = {
-//     vehicleNames: Vehicle.vehicleNames,
-//     setVehicle: setVehicle,
-//     getVehicle: getVehicle,
-//     getVehicles: () => {
-//         // Initialize all Vehicles and add to the Vehicle HashMap
+  createClass(Vehicle, [{
+    key: "calculateCostOfTravel",
+    value: function calculateCostOfTravel(distance) {
+      // typeOfCost: 1 is fixed (regardless of time or distance), 2 is fixed + a factor of distance  (e.g. a Taxi cab),
+      // and 3 is based on fraction of distance (e.g. a Car where unitCost is expressed as cost/gallon)
 
-//         for (let i = 0; i < 6; i++) {
-//             switch (i) {
-//                 // Aircraft, Bart, Bicycle, Bus, Car, Taxi
-//                 case 0:
-//                     setVehicle("Aircraft", 575, 120, 400, 1);
-//                     break;
-//                 case 1:
-//                     setVehicle("Bart", 60, 10, 8, 1);
-//                     break;
-//                 case 2:
-//                     setVehicle("Bicycle", 10, 0, 0, 1);
-//                     break;
-//                 case 3:
-//                     setVehicle("Bus", 30, 10, 0.5, 1);
-//                     break;
-//                 case 4:
-//                     setVehicle("Car", 50, 0, 3, 3);
-//                     break;
-//                 case 5:
-//                     setVehicle("Taxi", 50, 10, 1.5, 2);
-//                     break;
-//             }
-//         }
+      switch (this.typeOfCost) {
+        case 1:
+          return this.unitCost; // Fixed Cost
 
-//         return Vehicle.vehicles;
-//     }
-// };
+        case 2:
+          return this.unitCost + distance * 2; // Fixed Cost + $2 per mile
 
+        case 3:
+          return this.unitCost / 25 * distance; // Cost per gallon per mile. $3 a gallon and 25 mpg
+
+        default:
+          return 0.0;
+      }
+    }
+  }]);
+  return Vehicle;
+}();
 
 Vehicle.vehicleNames = ["Aircraft", "Bart", "Bicycle", "Bus", "Car", "Taxi"];
 
@@ -189,7 +178,6 @@ Vehicle.vehicleNames = ["Aircraft", "Bart", "Bicycle", "Bus", "Car", "Taxi"];
  */
 
 //const TinyQueue = require('tinyqueue');
-
 var Graph = function () {
 	function Graph() {
 		classCallCheck(this, Graph);
@@ -224,25 +212,22 @@ var Graph = function () {
 		// Implementation of Dijkstra's algorithm
 		// Computes paths for each Passenger p
 		value: function computePaths(p) {
-			var _this = this;
 
 			var source = p.currentLoc;
 
 			// Must reset every location distance and previous values upon each function call
-			var vals = Object.keys(this.graph).map(function (key) {
-				return _this.graph[key];
-			});
-
-			vals.forEach(function (x) {
+			Object.values(this.graph).forEach(function (x) {
 				x.dist = Infinity;
 				x.prev = null;
 			});
 
 			source.dist = 0;
-			var vertexQueue = new TinyQueue();
+			var vertexQueue = new TinyQueue([], function (a, b) {
+				return a && b ? a.dist < b.dist ? -1 : a.dist > b.dist ? 1 : 0 : 0;
+			});
 			vertexQueue.push(source);
 
-			while (vertexQueue.peek()) {
+			var _loop = function _loop() {
 
 				// Pop the Location with the least distance
 				var u = vertexQueue.pop();
@@ -250,24 +235,13 @@ var Graph = function () {
 				// Visit each edge exiting u with the specified vehicle preference
 				var pref = p.vehiclePreference;
 				var adj = u.adjacent;
-				adj[pref].forEach(function (e) {
+				adj.get(vehicles.get(p.vehiclePreference)).forEach(function (e) {
 					var v = e.to; // Location v
 					var alt = u.dist + e.weight; // Calculate alternative cost (double)
 					if (alt < v.dist) {
-
 						// Remove v from priority queue
-						var tempList = [];
-						var toRemove = vertexQueue.pop();
-						tempList.push(toRemove);
-						while (toRemove != v && vertexQueue.peek()) {
-							toRemove = vertexQueue.pop();
-
-							if (toRemove != v) tempList.push(toRemove);
-						}
-
-						// Add items back to the queue
-						tempList.forEach(function (item) {
-							vertexQueue.push(item);
+						vertexQueue.data.filter(function (loc) {
+							return loc == v;
 						});
 
 						v.dist = alt;
@@ -275,6 +249,10 @@ var Graph = function () {
 						vertexQueue.push(v);
 					}
 				});
+			};
+
+			while (vertexQueue.peek()) {
+				_loop();
 			}
 		}
 	}]);
@@ -316,10 +294,13 @@ var Location = function Location(name, latitude, longitude, x, y, vehicleTypes, 
     classCallCheck(this, Location);
 
     this.addNeighbor = function (neighbor, weight, vehicle) {
+        // var e = new Edge(this, neighbor, weight, vehicle);
+        // if (this.adjacent[vehicle.name] != undefined && !this.adjacent[vehicle.name].includes(e)) {
+        //     this.adjacent[vehicle.name].push(e);
+        // }
+
         var e = new Edge(_this, neighbor, weight, vehicle);
-        if (_this.adjacent[vehicle.name] != undefined && !_this.adjacent[vehicle.name].includes(e)) {
-            _this.adjacent[vehicle.name].push(e);
-        }
+        if (!_this.adjacent.get(vehicle).includes(e)) _this.adjacent.get(vehicle).push(e);
     };
 
     this.name = name;
@@ -329,12 +310,13 @@ var Location = function Location(name, latitude, longitude, x, y, vehicleTypes, 
     this.vehicles = vehicles;
     this.lat = latitude;
     this.lon = longitude;
+    this.dist = Infinity;
 
     // Initialize Adjacency HashMap and map each vehicle to an ArrayList of Edges
-    this.adjacent = {};
-    vehicles.forEach(function (payload) {
-        if (payload) {
-            _this.adjacent[payload.name] = [];
+    this.adjacent = new Map();
+    vehicles.forEach(function (vehicle) {
+        if (vehicle) {
+            _this.adjacent.set(vehicle, []);
         }
     });
 };
@@ -343,7 +325,26 @@ var getDistance = function getDistance(loc1, loc2) {
     return Math.sqrt(Math.pow(loc2.x - loc1.x, 2) + Math.pow(loc2.y - loc1.y, 2));
 };
 
+var getHaversineDistance = function getHaversineDistance(l1, l2) {
+    var lat1 = l1.lat;
+    var lon1 = l1.lon;
+    var lat2 = l2.lat;
+    var lon2 = l2.lon;
 
+    var R = 6371; // meters
+
+    var φ1 = Math.PI / 180 * lat1;
+    var φ2 = Math.PI / 180 * lat2;
+    var Δφ = Math.PI / 180 * (lat2 - lat1);
+    var Δλ = Math.PI / 180 * (lon2 - lon1);
+
+    var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    var d = R * c;
+
+    return d * 0.621371;
+};
 
 // module.exports = {
 //     getLocations: () => {
@@ -362,23 +363,46 @@ var getDistance = function getDistance(loc1, loc2) {
 //     getDistance: getDistance
 // };
 
-var path$2 = require('path');
+var Passenger = function () {
+    function Passenger(name, currentLoc, dest, preference, vehiclePreference) {
+        classCallCheck(this, Passenger);
 
-var Passenger = function Passenger(name, currentLoc, dest, preference, vehiclePreference) {
-    classCallCheck(this, Passenger);
+        this.name = name;
+        this.currentLoc = currentLoc;
+        this.dest = dest;
+        this.preference = preference; // 1 for shortest time, 2 for lowest cost
+        this.vehiclePreference = vehiclePreference;
+        this.path = [];
+        this.cost = 0;
+    }
 
-    this.name = name;
-    this.currentLoc = currentLoc;
-    this.dest = dest;
-    this.preference = preference; // 1 for shortest time, 2 for lowest cost
-    this.vehiclePreference = vehiclePreference;
-};
+    createClass(Passenger, [{
+        key: 'setPath',
+        value: function setPath(path$$1) {
+            this.path = path$$1;
+        }
+    }, {
+        key: 'calculateCost',
+        value: function calculateCost() {
+            // typeOfCost: 1 is fixed (regardless of time or distance), 2 is fixed + a factor of distance  (e.g. a Taxi cab),
+            // and 3 is based on fraction of distance (e.g. a Car where unitCost is expressed as cost/gallon)
 
-//import Edge from '../lib/edge';
+            var distance = 0;
+            for (var i = 0; i < this.path.length - 1; i++) {
+                distance += getHaversineDistance(this.path[i], this.path[i + 1]);
+            }this.cost = vehicles.get(this.vehiclePreference).calculateCostOfTravel(distance);
+
+            return this.cost;
+        }
+    }]);
+    return Passenger;
+}();
+
+// import Edge from '../lib/edge';
 var g = new Graph();
 var locations = [];
 var passengers = [];
-var vehicles = [];
+var vehicles = new Map();
 
 var loadVehicles = function loadVehicles() {
 	// Initialize all Vehicles and add to the Vehicle HashMap
@@ -386,22 +410,22 @@ var loadVehicles = function loadVehicles() {
 		switch (i) {
 			// Aircraft, Bart, Bicycle, Bus, Car, Taxi
 			case 0:
-				vehicles["Aircraft"] = new Vehicle('Aircraft', 575, 120, 400, 1);
+				vehicles.set("Aircraft", new Vehicle('Aircraft', 575, 120, 400, 1));
 				break;
 			case 1:
-				vehicles["Bart"] = new Vehicle("Bart", 60, 10, 8, 1);
+				vehicles.set("Bart", new Vehicle("Bart", 60, 10, 8, 1));
 				break;
 			case 2:
-				vehicles["Bicycle"] = new Vehicle("Bicycle", 10, 0, 0, 1);
+				vehicles.set("Bicycle", new Vehicle("Bicycle", 10, 0, 0, 1));
 				break;
 			case 3:
-				vehicles["Bus"] = new Vehicle("Bus", 30, 10, 0.5, 1);
+				vehicles.set("Bus", new Vehicle("Bus", 30, 10, 0.5, 1));
 				break;
 			case 4:
-				vehicles["Car"] = new Vehicle("Car", 50, 0, 3, 3);
+				vehicles.set("Car", new Vehicle("Car", 50, 0, 3, 3));
 				break;
 			case 5:
-				vehicles["Taxi"] = new Vehicle("Taxi", 50, 10, 1.5, 2);
+				vehicles.set("Taxi", new Vehicle("Taxi", 50, 10, 1.5, 2));
 				break;
 		}
 	}
@@ -423,12 +447,12 @@ var loadLocations = function loadLocations() {
 		var types = payload[5].split("|");
 		var vehicleTypes = new Array(types.length);
 		for (i = 0; i < types.length; i++) {
-			vehicleTypes[i] = types[i] === "1";
+			vehicleTypes[i] = types[i] == 1;
 		}var vehiclePayload = [];
 
 		// Initialize all Vehicles at that location
 		for (i = 0; i < vehicleTypes.length; i++) {
-			if (vehicleTypes[i]) vehiclePayload.push(vehicles[Vehicle.vehicleNames[i]]);else vehiclePayload.push(null);
+			if (vehicleTypes[i]) vehiclePayload.push(vehicles.get(Vehicle.vehicleNames[i]));else vehiclePayload.push(null);
 		}
 
 		// Create a new Location object and add it to the list
@@ -469,29 +493,49 @@ var loadPaths = function loadPaths() {
 // Small helpers you might want to keep
 // All stuff below is just to show you how it works. You can delete all of it.
 
-//const p5 = require('../app/libraries/p5.min');
-// var newNode = document.createElement("div");
-// document.body.appendChild(newNode);
 var root = document.querySelector('#root');
 
 var sketch = function sketch(p) {
-    var gray = 0;
-    var bg = void 0;
+    var bg = void 0,
+        x = void 0,
+        y = void 0;
+    var path$$1 = [];
+    var passengerIndex = 0;
+    var locIndex = 1;
+    var h = 20;
+    var labels = [];
 
     p.setup = function () {
         var canvas = p.createCanvas(1700, 900);
-        bg = p.loadImage("../Main/Map.png");
-        console.log(loadVehicles());
-        console.log(loadLocations());
-        console.log(loadPaths());
-        console.log(loadPassengers());
-        g.computePaths(passengers[0]);
-        console.log(getShortestPathTo(passengers[0].dest));
         canvas.parent('root');
+        bg = p.loadImage('../build/icons/Map.PNG');
+        loadVehicles();
+        loadLocations();
+        loadPaths();
+        loadPassengers();
+
+        passengers.forEach(function (passenger) {
+            g.computePaths(passenger);
+            var personPath = getShortestPathTo(passenger.dest);
+            if (personPath[0] == personPath[1]) passenger.setPath([passenger.currentLoc, passenger.currentLoc]);else passenger.setPath(personPath);
+
+            console.log(passenger.name + '\'s path using ' + passenger.vehiclePreference + ':');
+            var pathString = passenger.path.map(function (loc) {
+                return loc.name;
+            }).join(', ');
+            console.log('' + pathString);
+        });
+
+        p.background(255);
+
+        path$$1 = passengers[passengerIndex].path;
+        x = path$$1[0].x;
+        y = path$$1[0].y;
     };
 
     p.draw = function () {
         p.image(bg, 0, 0);
+        p.frameRate(30);
 
         // Map all locations
         locations.forEach(function (loc) {
@@ -508,15 +552,82 @@ var sketch = function sketch(p) {
             // For each adjacent location, draw a line between them
             loc.vehicles.forEach(function (vehicle) {
                 if (vehicle != null) {
-                    loc.adjacent[vehicle.name].forEach(function (e) {
+                    loc.adjacent.get(vehicle).forEach(function (e) {
                         p.line(loc.x, loc.y, e.to.x, e.to.y);
                     });
                 }
             });
         });
-        //p.background(gray)
-        //p.rect(p.width/2 - 25, p.height/2 - 25, 50, 50)
-        //p.text(g.graph, 10, 30);
+
+        x = p.lerp(parseFloat(x), parseFloat(path$$1[locIndex].x), 0.1);
+        y = p.lerp(parseFloat(y), parseFloat(path$$1[locIndex].y), 0.1);
+
+        // Create a circle that represents the current passenger as they traverse the graph and add their name above it
+        p.fill(0, 175, 255);
+        p.ellipse(x, y, 25, 25);
+        p.fill(0);
+        p.text(passengers[passengerIndex].name, x - 10, y);
+
+        // Once a passenger arrives at their next location, if they arrive at their destination, go to the next person, otherwise, go to next location
+        if (Math.abs(x - parseFloat(path$$1[locIndex].x)) < 1 || Math.abs(y - parseFloat(path$$1[locIndex].y)) < 1) {
+            var changedPaths = false;
+
+            // If passenger has reached their destination
+            if (locIndex + 1 == path$$1.length) {
+                // If last passenger has reached their destination
+                if (passengerIndex + 1 == passengers.length) {
+                    console.log("FINISHED!");
+                    // Print the last person's name at their finishing position
+                    p.fill(60, 0, 110);
+                    p.textSize(20);
+                    p.text(passengers[passengerIndex].name, x - 10, y - 20);
+
+                    // Print all passenger's paths in the white space to the right
+                    passengers.forEach(function (passenger) {
+                        // If passenger could not find a path to their destination, their path would be: [currentLoc, currentLoc]
+                        if (passenger.path[0] == passenger.path[1]) p.text('No possible path for ' + passenger.name + ' to go from ' + passenger.currentLoc.name + ' to ' + passenger.dest.name + ' using a %s\n', 720, h);else p.text(passenger.name + '\'s path: ' + passenger.path.map(function (loc) {
+                            return loc.name;
+                        }).join(', ') + ' Using: ' + passenger.vehiclePreference + '   Total Cost: ' + passenger.calculateCost().toLocaleString('en-US', { style: "currency", currency: "USD" }) + '\n', 720, h);
+
+                        h += 20;
+                    });
+
+                    // Stop drawing
+                    p.noLoop();
+                }
+
+                // If passenger has reached their destination, get next passenger
+                else {
+                        labels.push({
+                            "name": passengers[passengerIndex].name,
+                            "x": x - 10,
+                            "y": y - 20
+                        });
+                        passengerIndex++;
+                        locIndex = 1;
+                        changedPaths = true;
+                    }
+            }
+
+            // Otherwise, continue to the next location
+            else {
+                    locIndex++;
+                }
+
+            path$$1 = passengers[passengerIndex].path;
+
+            // If passenger has changed, set x and y to the coordinates of their current location
+            if (changedPaths) {
+                x = path$$1[0].x;
+                y = path$$1[0].y;
+            }
+        }
+
+        labels.forEach(function (label) {
+            p.fill(60, 0, 110);
+            p.textSize(20);
+            p.text(label.name, label.x, label.y);
+        });
     };
 
     p.mousePressed = function (e) {
@@ -524,8 +635,7 @@ var sketch = function sketch(p) {
     };
 };
 
-// See https://github.com/processing/p5.js/wiki/Instantiation-Cases
-new p5(sketch, window.document.getElementById('root')); // 2nd param can be a canvas html element
+new p5(sketch);
 
 }());
 //# sourceMappingURL=app.js.map

@@ -1,14 +1,14 @@
 import Vehicle from '../lib/vehicle';
 import Location, { getDistance } from '../lib/location';
 import Passenger from '../lib/passenger';
-//import Edge from '../lib/edge';
+// import Edge from '../lib/edge';
 import Graph from '../lib/graph';
 import fs from 'fs';
 import path from 'path';
 export let g = new Graph();
 export let locations = [];
 export let passengers = [];
-export let vehicles = [];
+export let vehicles = new Map();
 
 
 export const loadVehicles = () => {
@@ -17,22 +17,22 @@ export const loadVehicles = () => {
 		switch (i) {
 			// Aircraft, Bart, Bicycle, Bus, Car, Taxi
 			case 0:
-				vehicles["Aircraft"] = new Vehicle('Aircraft', 575, 120, 400, 1);
+				vehicles.set("Aircraft", new Vehicle('Aircraft', 575, 120, 400, 1));
 				break;
 			case 1:
-				vehicles["Bart"] = new Vehicle("Bart", 60, 10, 8, 1);
+				vehicles.set("Bart",new Vehicle("Bart", 60, 10, 8, 1));
 				break;
 			case 2:
-				vehicles["Bicycle"] = new Vehicle("Bicycle", 10, 0, 0, 1);
+				vehicles.set("Bicycle", new Vehicle("Bicycle", 10, 0, 0, 1));
 				break;
 			case 3:
-				vehicles["Bus"] = new Vehicle("Bus", 30, 10, 0.5, 1);
+				vehicles.set("Bus", new Vehicle("Bus", 30, 10, 0.5, 1));
 				break;
 			case 4:
-				vehicles["Car"] = new Vehicle("Car", 50, 0, 3, 3);
+				vehicles.set("Car", new Vehicle("Car", 50, 0, 3, 3));
 				break;
 			case 5:
-				vehicles["Taxi"] = new Vehicle("Taxi", 50, 10, 1.5, 2);
+				vehicles.set("Taxi", new Vehicle("Taxi", 50, 10, 1.5, 2));
 				break;
 		}
 	}
@@ -54,7 +54,7 @@ export const loadLocations = () => {
 		var types = payload[5].split("|");
 		var vehicleTypes = new Array(types.length);
 		for (i = 0; i < types.length; i++)
-			vehicleTypes[i] = types[i] === "1";
+			vehicleTypes[i] = types[i] == 1;
 
 
 		var vehiclePayload = [];
@@ -62,7 +62,7 @@ export const loadLocations = () => {
 		// Initialize all Vehicles at that location
 		for (i = 0; i < vehicleTypes.length; i++) {
 			if (vehicleTypes[i]) 
-				vehiclePayload.push(vehicles[Vehicle.vehicleNames[i]]);
+				vehiclePayload.push(vehicles.get(Vehicle.vehicleNames[i]));
 			else
 				vehiclePayload.push(null);
 		}
