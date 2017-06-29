@@ -1,15 +1,13 @@
 {
-  "name": "electron-boilerplate",
-  "productName": "Electron Boilerplate",
-  "description": "Starter for your Electron application",
-  "version": "0.0.0",
-  "author": "Mr. Gumby <mr.gumby@example.com>",
-  "copyright": "© 2017, Gumby inc.",
-  "homepage": "http://example.com",
+  "name": "transportation-graph",
+  "productName": "Transportation Graph",
+  "description": "Visualizes graph traversals",
+  "version": "0.0.1",
+  "author": "Ashwin Gokhale gokhale0@purdue.edu",
   "license": "MIT",
   "main": "app/background.js",
   "build": {
-    "appId": "com.example.electron-boilerplate",
+    "appId": "com.avg.transportation-graph",
     "files": [
       "app/**/*",
       "node_modules/**/*",
