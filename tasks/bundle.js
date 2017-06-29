@@ -4,6 +4,8 @@ const rollup = require('rollup').rollup;
 const babel = require('rollup-plugin-babel');
 const resolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
+const uglify = require('rollup-plugin-uglify');
+const minify = require('uglify-es').minify;
 
 const nodeBuiltInModules = ['assert', 'buffer', 'child_process', 'cluster',
   'console', 'constants', 'crypto', 'dgram', 'dns', 'domain', 'events',
@@ -45,7 +47,8 @@ module.exports = (src, dest, opts) => {
       namedExports: {
         '../app/app.js': ['locations', 'g']
       }
-    })
+    }),
+    uglify({}, minify)
   ];
 
   return rollup({

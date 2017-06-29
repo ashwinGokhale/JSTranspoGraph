@@ -1,0 +1,44 @@
+[
+  {
+    "type": "Aircraft",
+    "speed": 575,
+    "wait": 120,
+    "unitCost": 400,
+    "costType": 1
+  },
+  {
+    "type": "Bart",
+    "speed": 60,
+    "wait": 10,
+    "unitCost": 8,
+    "costType": 1
+  },
+  {
+    "type": "Bicycle",
+    "speed": 10,
+    "wait": 0,
+    "unitCost": 0,
+    "costType": 1
+  },
+  {
+    "type": "Bus",
+    "speed": 30,
+    "wait": 10,
+    "unitCost": 0.5,
+    "costType": 1
+  },
+  {
+    "type": "Car",
+    "speed": 50,
+    "wait": 0,
+    "unitCost": 3,
+    "costType": 3
+  },
+  {
+    "type": "Taxi",
+    "speed": 50,
+    "wait": 10,
+    "unitCost": 1.5,
+    "costType": 2
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Santa Cruz",
+    "latitude": 36.9741,
+    "longitude": 122.0308,
+    "x": 425,
+    "y": 880,
+    "vehicleTypes": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "San Francisco",
+    "latitude": 37.7749,
+    "longitude": 122.4194,
+    "x": 110,
+    "y": 75,
+    "vehicleTypes": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "San Ramon",
+    "latitude": 37.7799,
+    "longitude": 121.9780,
+    "x": 480,
+    "y": 85,
+    "vehicleTypes": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "Dublin",
+    "latitude": 37.7022,
+    "longitude": 121.9358,
+    "x": 515,
+    "y": 150,
+    "vehicleTypes": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "Pleasanton",
+    "latitude": 37.6624,
+    "longitude": 121.8747,
+    "x": 550,
+    "y": 190,
+    "vehicleTypes": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "Livermore",
+    "latitude": 37.6819,
+    "longitude": 121.7680,
+    "x": 640,
+    "y": 170,
+    "vehicleTypes": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "Palo Alto",
+    "latitude": 37.4419,
+    "longitude": 122.1430,
+    "x": 340,
+    "y": 410,
+    "vehicleTypes": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "San Jose",
+    "latitude": 37.3382,
+    "longitude": 121.8863,
+    "x": 540,
+    "y": 515,
+    "vehicleTypes": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+]

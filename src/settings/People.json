@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Kelly",
+    "currentLocation": "Livermore",
+    "destination": "San Francisco",
+    "preference": 3,
+    "vehiclePreference": "Aircraft"
+  },
+  {
+    "name": "Daniel",
+    "currentLocation": "Dublin",
+    "destination": "Pleasanton",
+    "preference": 1,
+    "vehiclePreference": "Bart"
+  },
+  {
+    "name": "Bill",
+    "currentLocation": "San Francisco",
+    "destination": "San Jose",
+    "preference": 1,
+    "vehiclePreference": "Bicycle"
+  },
+  {
+    "name": "Melinda",
+    "currentLocation": "Santa Cruz",
+    "destination": "San Ramon",
+    "preference": 2,
+    "vehiclePreference": "Bus"
+  },
+  {
+    "name": "Amelia",
+    "currentLocation": "San Ramon",
+    "destination": "Santa Cruz",
+    "preference": 1,
+    "vehiclePreference": "Car"
+  },
+  {
+    "name": "Regis",
+    "currentLocation": "Santa Cruz",
+    "destination": "Dublin",
+    "preference": 2,
+    "vehiclePreference": "Taxi"
+  },
+  {
+    "name": "Terry",
+    "currentLocation": "Dublin",
+    "destination": "Palo Alto",
+    "preference": 1,
+    "vehiclePreference": "Car"
+  },
+  {
+    "name": "Larry",
+    "currentLocation": "Palo Alto",
+    "destination": "Livermore",
+    "preference": 2,
+    "vehiclePreference": "Car"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "from": "San Francisco",
+    "to": "San Ramon"
+  },
+  {
+    "from": "San Francisco",
+    "to": "Livermore"
+  },
+  {
+    "from": "San Ramon",
+    "to": "Dublin"
+  },
+  {
+    "from": "Dublin",
+    "to": "Pleasanton"
+  },
+  {
+    "from": "Palo Alto",
+    "to": "San Francisco"
+  },
+  {
+    "from": "Pleasanton",
+    "to": "San Jose"
+  },
+  {
+    "from": "Pleasanton",
+    "to": "Livermore"
+  },
+  {
+    "from": "Pleasanton",
+    "to": "Palo Alto"
+  },
+  {
+    "from": "Santa Cruz",
+    "to": "Palo Alto"
+  },
+  {
+    "from": "San Jose",
+    "to": "Palo Alto"
+  },
+  {
+    "from": "San Jose",
+    "to": "Santa Cruz"
+  },
+  {
+    "from": "San Jose",
+    "to": "Livermore"
+  }
+]
